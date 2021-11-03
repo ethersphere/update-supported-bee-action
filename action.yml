@@ -25,7 +25,7 @@ runs:
 
     - name: Install npm deps
       run: |
-        if [[ -f "package-lock.json "]]; then
+        if [[ -f "package-lock.json" ]]; then
           npm ci
           exit 0
         fi

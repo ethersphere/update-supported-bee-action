@@ -1,0 +1,57 @@
+name: 'Update supported Bee action'
+description: "Github Action that synchronize supported Bee's version of Bee-js in your README"
+branding:
+  icon: upload-cloud
+  color: orange
+inputs:
+  token:
+    description: 'Token to be used for creating the PR comment. Default: GITHUB_TOKEN'
+    required: false
+    default: ${{ github.token }}
+  files:
+    description: 'Files delimited by space to search&replace the version. Default: README.md'
+    required: false
+    default: README.md
+outputs:
+  version:
+    description: 'The detected Bee version'
+    value: ${{ steps.bee.outputs.props }}
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/setup-node@v1
+      with:
+        node-version: 16
+
+    - name: Install npm deps
+      run: |
+        if [[ -f "package-lock.json "]]; then
+          npm ci
+          exit 0
+        fi
+
+        echo "\033[0;31mNo package-lock.json was detected!"
+        exit 1
+      shell: bash
+
+    - name: Get supported Bee version
+      id: bee
+      uses: notiz-dev/github-action-json-property@release
+      with:
+        path: 'node_modules/@ethersphere/bee-js/package.json'
+        prop_path: 'engines.bee'
+
+    - name: Replace README
+      shell: bash
+      run: sed -i "" "s|\<\!\-\- SUPPORTED_BEE_START \-\-\>[^<]*\<\!\-\- SUPPORTED_BEE_END \-\-\>|\<\!\-\- SUPPORTED_BEE_START \-\-\>${{ steps.bee.outputs.props }}\<\!\-\- SUPPORTED_BEE_END \-\-\>|g" ${{ inputs.files }}
+
+    - name: Create PR
+      uses: gr2m/create-or-update-pull-request-action@v1
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+      with:
+        title: "docs: update supported bee"
+        body: "Updates supported Bee version as it is specified in bee-js"
+        branch: "docs/update-supported-bee"
+        commit-message: "docs: update supported bee"
+        author: "bee-worker <bee-worker@ethswarm.org>"

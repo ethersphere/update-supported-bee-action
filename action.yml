@@ -19,6 +19,8 @@ outputs:
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v2
+
     - uses: actions/setup-node@v1
       with:
         node-version: 16
@@ -41,9 +43,12 @@ runs:
         path: 'node_modules/@ethersphere/bee-js/package.json'
         prop_path: 'engines.bee'
 
-    - name: Replace README
+    - name: Replace files
       shell: bash
-      run: sed -i "" "s|\<\!\-\- SUPPORTED_BEE_START \-\-\>[^<]*\<\!\-\- SUPPORTED_BEE_END \-\-\>|\<\!\-\- SUPPORTED_BEE_START \-\-\>${{ steps.bee.outputs.props }}\<\!\-\- SUPPORTED_BEE_END \-\-\>|g" ${{ inputs.files }}
+      run: |
+        cat ${{ inputs.files }}
+        sed -i "s|\<\!\-\- SUPPORTED_BEE_START \-\-\>[^<]*\<\!\-\- SUPPORTED_BEE_END \-\-\>|\<\!\-\- SUPPORTED_BEE_START \-\-\>${{ steps.bee.outputs.prop }}\<\!\-\- SUPPORTED_BEE_END \-\-\>|g" ${{ inputs.files }}
+        cat ${{ inputs.files }}
 
     - name: Create PR
       uses: gr2m/create-or-update-pull-request-action@v1

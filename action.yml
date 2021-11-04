@@ -1,7 +1,7 @@
 name: 'Update supported Bee action'
 description: "Github Action that synchronize supported Bee's version of Bee-js in your README"
 branding:
-  icon: upload-cloud
+  icon: refresh-cw
   color: orange
 inputs:
   token:

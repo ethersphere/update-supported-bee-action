@@ -27,13 +27,18 @@ runs:
 
     - name: Install npm deps
       run: |
-        if [[ -f "package-lock.json" ]]; then
-          npm ci
-          exit 0
+        if [[ ! -f "package-lock.json" ]]; then
+          echo "\033[0;31mNo package-lock.json was detected!"
+          exit 1
         fi
 
-        echo "\033[0;31mNo package-lock.json was detected!"
-        exit 1
+        npm ci
+
+        if [[ ! -f "node_modules/@ethersphere/bee-js/package.json" ]]; then
+            echo "\033[0;31mBee-js is not part of dependencies of the package-lock.json!"
+            exit 1
+        fi
+
       shell: bash
 
     - name: Get supported Bee version

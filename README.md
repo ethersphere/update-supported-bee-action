@@ -49,7 +49,7 @@ jobs:
 | Name | Description | Default |
 | --- | --- | --- |
 | `token` | Token to be used for creating of the updating PR. | `GITHUB_TOKEN` |
-| `files` | Files delimited by space to search&replace the version. | `README.md` |
+| `files` | Glob specification of files to search the replace mark in. | `README.md` |
 
 ## Action outputs
 

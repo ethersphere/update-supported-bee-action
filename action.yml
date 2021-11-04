@@ -44,11 +44,12 @@ runs:
         prop_path: 'engines.bee'
 
     - name: Replace files
-      shell: bash
-      run: |
-        cat ${{ inputs.files }}
-        sed -i "s|\<\!\-\- SUPPORTED_BEE_START \-\-\>[^<]*\<\!\-\- SUPPORTED_BEE_END \-\-\>|\<\!\-\- SUPPORTED_BEE_START \-\-\>${{ steps.bee.outputs.prop }}\<\!\-\- SUPPORTED_BEE_END \-\-\>|g" ${{ inputs.files }}
-        cat ${{ inputs.files }}
+      uses: jacobtomlinson/gha-find-replace@v2
+      with:
+        find: "<!-- SUPPORTED_BEE_START -->.*?<!-- SUPPORTED_BEE_END -->"
+        replace: "<!-- SUPPORTED_BEE_START -->${{ steps.bee.outputs.prop }}<!-- SUPPORTED_BEE_END -->"
+        include: ${{ inputs.files }}
+        regex: true
 
     - name: Create PR
       uses: gr2m/create-or-update-pull-request-action@v1

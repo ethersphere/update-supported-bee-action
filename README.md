@@ -50,6 +50,7 @@ jobs:
 | --- | --- | --- |
 | `token` | Token to be used for creating of the updating PR. | `GITHUB_TOKEN` |
 | `files` | Glob specification of files to search the replace mark in. | `README.md` |
+| `updateEngine` | If `true` then the action will also update `package.json`'s `engines.bee` property with the Bee version. | `false` |
 
 ## Action outputs
 

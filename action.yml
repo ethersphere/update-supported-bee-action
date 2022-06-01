@@ -12,6 +12,10 @@ inputs:
     description: 'Files delimited by space to search&replace the version. Default: README.md'
     required: false
     default: README.md
+  updateEngine:
+    description: 'If turned on, then will update package.json engines.bee field as well'
+    required: false
+    default: 'false'
 outputs:
   version:
     description: 'The detected Bee version'
@@ -55,6 +59,14 @@ runs:
         replace: "<!-- SUPPORTED_BEE_START -->${{ steps.bee.outputs.prop }}<!-- SUPPORTED_BEE_END -->"
         include: ${{ inputs.files }}
         regex: true
+
+    - name: Update package.json
+      if: inputs.updateEngine == 'true' && hashFiles('package.json') != ''
+      uses: jossef/action-set-json-field@v1
+      with:
+        file: package.json
+        field: engines.bee
+        value: ${{ steps.bee.outputs.prop }}
 
     - name: Create PR
       uses: gr2m/create-or-update-pull-request-action@v1

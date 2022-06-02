@@ -68,6 +68,12 @@ runs:
         field: engines.bee
         value: ${{ steps.bee.outputs.prop }}
 
+
+    - name: Add trailing new-line to package.json
+      if: inputs.updateEngine == 'true' && hashFiles('package.json') != ''
+      shell: bash
+      run: printf "\n" >> package.json
+
     - name: Create PR
       uses: gr2m/create-or-update-pull-request-action@v1
       env:
